@@ -1,14 +1,37 @@
+#include <iostream>
+using namespace std;
+
 const int MAX_NAME = 16;
 
 // typedef を使うと、 object 宣言時にstructを書かなくて良くなる
-typedef struct Student {
+struct Student {
   char name[MAX_NAME + 1];
   int scoreJapanese;
   int scoreMath;
   int scoreEnglish;
 };
 
+void Show(const Student& student){
+  cout << "name: " << student.name << endl
+       << "  japanese: " << student.scoreJapanese
+       << "  math: " << student.scoreMath
+       << "  english: " << student.scoreEnglish
+       << endl;
+}
+
 // メンバ/object
 Student student;
 
 char str[] = "foo" "bar";
+
+int main() {
+  Student student[] = {
+    { "akai", 73, 98, 86,},
+    { "kasai",64, 45, 40,},
+  };
+  int size = sizeof student / sizeof *student;
+
+  for (int i=0; i<size; ++i) {
+    Show(student[i]);
+  }
+};
