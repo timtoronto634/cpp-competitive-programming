@@ -11,18 +11,13 @@ struct Student {
   int scoreEnglish;
 };
 
-void Show(const Student& student){
-  cout << "name: " << student.name << endl
-       << "  japanese: " << student.scoreJapanese
-       << "  math: " << student.scoreMath
-       << "  english: " << student.scoreEnglish
+void Show(const Student* pointer){
+  cout << "name: " << pointer->name << endl
+       << "  japanese: " << pointer->scoreJapanese
+       << "  math: " << pointer->scoreMath
+       << "  english: " << pointer->scoreEnglish
        << endl;
 }
-
-// メンバ/object
-Student student;
-
-char str[] = "foo" "bar";
 
 int main() {
   Student student[] = {
@@ -32,6 +27,6 @@ int main() {
   int size = sizeof student / sizeof *student;
 
   for (int i=0; i<size; ++i) {
-    Show(student[i]);
+    Show(&student[i]);
   }
 };
