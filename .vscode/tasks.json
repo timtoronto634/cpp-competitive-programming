@@ -3,13 +3,9 @@
         {
             "type": "cppbuild",
             "label": "C/C++: g++ build active file",
-            "command": "/usr/bin/g++",
+            "command": "/workspaces/kyoprocpp/bin/run",
             "args": [
-                "-fdiagnostics-color=always",
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+              "${fileBasenameNoExtension}"
             ],
             "options": {
                 "cwd": "${fileDirname}"
