@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "all": "cpp"
+      "*.html": "html",
+      "all": "cpp",
+      "ostream": "cpp"
     }
 }
