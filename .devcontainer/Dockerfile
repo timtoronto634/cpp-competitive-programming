@@ -4,5 +4,10 @@
 ARG VARIANT="buster"
 FROM mcr.microsoft.com/vscode/devcontainers/cpp:0-${VARIANT}
 
+RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - && \
+  apt-get install -y nodejs python3-pip && \
+  npm install -g atcoder-cli && \
+  python3 -m pip install online-judge-tools
+
 ENV CPLUS_INCLUDE_PATH=/workspaces/kyoprocpp/ac-library
 ENV PATH=$PATH:/workspaces/kyoprocpp/bin
