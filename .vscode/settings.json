@@ -3,5 +3,6 @@
       "*.html": "html",
       "all": "cpp",
       "ostream": "cpp"
-    }
+    },
+    "cmake.configureOnOpen": false
 }

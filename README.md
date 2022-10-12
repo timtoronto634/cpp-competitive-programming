@@ -11,6 +11,15 @@ code .
 # Ctrl-shift-P or Cmd-Shift-P(macの場合) で Command Palette を開いて、Remote-Containers: Rebuild Container を選択
 ```
 
+## acc + oj を使う場合
+template.json や template となるファイルは自分で用意。普通に作るとgit 管理外になるので、どこかにbackupあるといいかも
+move-it-to-config/ にtemplate の設定とファイルをおいてあるので、それを設定に移すことでも設定可能
+
+コンパイルしてojを実行するコマンドはalias/shortcut に入ってると便利かも
+`echo "alias coj='g++ main.cpp -o main && oj t -c ./main'" >> ~/.bashrc`
+
+
+## test.txt を使う場合
 何か C++ のプログラムを作る。ここでは例として `hoge.cpp` とする。
 
 ```cpp
