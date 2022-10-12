@@ -1,30 +1,31 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-bool is_valid_move(int xx, int yy, vector<vector<int>> v) {
+bool is_valid_move(int xx, int yy, vector<vector<int>> &v) {
+
   if (xx==0 && yy==0) return false;
   if (xx <0 || yy < 0 || xx >= v.size() || yy >= v.size()) return false;
   return v[xx][yy] == 0;
 }
 
 int main() {
-  int n, m;
+  int m, n;
   cin >> n >> m;
 
   vector<pair<int,int>> moves(0);
-  int root = int(sqrt(m));
-  auto squared = m ^ 2;
-  for (int i=1;i<=root;i++) {
-    double rest = sqrt(squared - (i^2));
-    if (rest == int(rest)) {
-      moves.push_back(make_pair(i, rest));
-      moves.push_back(make_pair(-1 * i, rest));
-      moves.push_back(make_pair(i, -1 * rest));
-      moves.push_back(make_pair(-1 * i, -1 * rest));
-      moves.push_back(make_pair(rest, i));
-      moves.push_back(make_pair(rest, -1 * i));
-      moves.push_back(make_pair(-1 * rest, i));
-      moves.push_back(make_pair(-1 * rest, -1 * i));
+  for (int i=0;i<=n;i++) {
+    for (int j=0;j<=n;j++) {
+      if (i*i + j*j == m) {
+        moves.push_back(make_pair(i, j));
+        moves.push_back(make_pair(-1 * i, j));
+        moves.push_back(make_pair(i, -1 * j));
+        moves.push_back(make_pair(-1 * i, -1 * j));
+        moves.push_back(make_pair(j, i));
+        moves.push_back(make_pair(j, -1 * i));
+        moves.push_back(make_pair(-1 * j, i));
+        moves.push_back(make_pair(-1 * j, -1 * i));
+      }
     }
   }
 
