@@ -1,4 +1,8 @@
-競プロ C++ 用環境
+# origin
+Original development environment is created in https://github.com/cxconj/kyoprocpp.
+
+
+# 競プロ C++ 用環境
 
 - VSCode をインストール
 - [Remote Development](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack) 拡張を入れる
