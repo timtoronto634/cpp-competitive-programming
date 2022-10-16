@@ -22,6 +22,9 @@ move-it-to-config/ にtemplate の設定とファイルをおいてあるので�
 コンパイルしてojを実行するコマンドはalias/shortcut に入ってると便利かも
 `echo "alias coj='g++ main.cpp -o main && oj t -c ./main'" >> ~/.bashrc`
 
+To use acc command, login is required: `acc login` 
+To submit using oj, login is required: `oj login https://atcoder.jp/contests/`
+
 
 ## test.txt を使う場合
 何か C++ のプログラムを作る。ここでは例として `hoge.cpp` とする。
