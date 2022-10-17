@@ -1,59 +1,66 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <map>
+#include <vector>
+#include <algorithm>
 using namespace std;
-using ll = long long int;
 
-int main() {
-  ll h,w;
-  ll rs, cs;
-  cin >> h >> w >> rs >> cs;
-  int num_block;
-  cin >> num_block;
+int h,w,n,r,c,Q;
+map<int, vector<int>> amp, bmp;
 
-  // create and fill surroundings
-  vector<vector<int>> mat(h+2, vector<int>(w+2, 0));
-  for (int i=0;i<h+2;i++) {
-    mat[i][0] = 1;
-    mat[i][w+1] = 1;
+int main(void) {
+  cin >> h >> w >> r >> c >> n;
+  for (int i=1;i<=n;i++)  {
+    int rr, cc;
+    cin >> rr >> cc;
+    amp[rr].push_back(cc), bmp[cc].push_back(rr);
   }
-  for (int j=0;j<w+2;j++) {
-    mat[0][j] = 1;
-    mat[h+1][j] = 1;
-  }
+  for (auto &p : amp) sort(p.second.begin(), p.second.end());
+  for (auto &p : bmp) sort(p.second.begin(), p.second.end());
 
-  int r,c;
-  for (int m=0;m<num_block;m++) {
-    cin >> r >> c;
-    mat[r][c] = 1;
-  }
-
-  int num_op;
-  cin >> num_op;
-
-  string d;
-  int length;
-  auto cur = make_pair(rs, cs);
-  for (int op=0;op<num_op;op++) {
-    cin >> d >> length;
-
-    int rd=0, cd=0;
-    if (d == "L") {rd = 0; cd = -1;}
-    if (d == "R") {rd = 0; cd = 1;}
-    if (d == "U") {rd = -1; cd = 0;}
-    if (d == "D") {rd = 1; cd = 0;}
-
-    // mat, cur, rd, cd, l
-    for (int m=1;m<=length;m++) {
-      if (mat[cur.first + rd][cur.second + cd] == 0) {
-        cur.first = cur.first+rd;
-        cur.second = cur.second +cd;
-      } else {
-        break;
+  cin >> Q;
+  char d; int l;
+  for (int i=1;i<=Q;i++) {
+    cin >> d >> l;
+    if (d=='L') {
+      auto it = amp.find(r); int lb = 0;
+      if (it != amp.end()) {
+        vector<int> &vec = it->second;
+        auto it2 = lower_bound(vec.begin(), vec.end(), c);
+        if (it2 != vec.begin()) it2--, lb = *it2;
       }
+      c = max(c-l, lb+1);
     }
-
-    cout << cur.first << " " << cur.second << endl;;
+    if (d=='U') {
+      auto it = bmp.find(c); int lb = 0;
+      if (it != bmp.end()) {
+        vector<int> &vec = it->second;
+        auto it2 = lower_bound(vec.begin(), vec.end(), r);
+        if (it2 != vec.begin()) it2--, lb = *it2;
+      }
+      r = max(r-l, lb+1);
+    }
+    if (d=='R') {
+      auto it = amp.find(r); int ub = w+1;
+      if (it != amp.end()) {
+        vector<int> &vec = it->second;
+        auto it2 = upper_bound(vec.begin(), vec.end(), c);
+        if (it2 != vec.end()) ub = *it2;
+      }
+      c = min(c+l, ub-1);
+    }
+    if (d=='D') {
+      auto it = bmp.find(c); int ub = h+1;
+      if (it != bmp.end()) {
+        vector<int> &vec = it->second;
+        auto it2 = upper_bound(vec.begin(), vec.end(), r);
+        if (it2 != vec.end()) ub = *it2;
+      }
+      r = min(r+l, ub-1);
+    }
+    cout << r << " " << c << endl;
   }
-
 
   return 0;
+
+
 }
