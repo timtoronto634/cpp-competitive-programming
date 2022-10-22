@@ -2,54 +2,57 @@
 using namespace std;
 using ll = long long int;
 
-struct node {
-  node *Next;
-  node *Pre;
-  int val;
+class Node {
+  public:
+    int val;
+    Node* prev;
+    Node* next;
+    Node(int k) {
+      val = k;
+      prev = nullptr;
+      next = nullptr;
+    }
 };
 
-int Q, x;
-string op;
-map<int, node*> notebook;
 int main() {
+  int Q, x;
+  string op;
   cin >> Q;
-  node root = node{0, 0,-1};
-  node* prev = &root;
-  vector<int> arr(Q,0);
+  Node* root = new Node(-1);
+  Node* cur = root;
+  map<int, Node*> notebook;
   for (int i=0; i<Q;i++) {
     cin >> op;
     if (op == "ADD") {
       cin >> x;
-      node n = node{0, prev, x};
-      (*prev).Next = &n;
-      prev = &n;
-      arr[i] = x;
+      Node* n = new Node(x);
+      cur->next = n;
+      n->prev = cur;
+      cur = cur->next;
+      cout << cur->val;
     }
     if (op == "SAVE") {
       cin >> x;
-      notebook[x] = prev;
-      arr[i] = prev->val;
+      notebook[x] = cur;
+      cout << cur->val;
     }
     if (op == "LOAD") {
       cin >> x;
-      prev = notebook[x];
-      if (prev != 0) {
-      arr[i] = prev->val;
+      if (notebook.count(x)) {
+        cur = notebook.at(x);
+      } else {
+        cur = root;
       }
+      cout << cur->val;
     }
     if (op == "DELETE") {
-      prev = (*prev).Pre;
-      arr[i] = prev->val;
+      if (cur != root) {
+        cur = cur->prev;
+      }
+      cout << cur->val;
     }
+    if (i != (Q-1)) cout << " ";
   }
-  for (int i=0; i<Q; i++) {
-    cout << arr[i];
-    if (i != (Q-1)) {
-      cout << " ";
-    } else {
-      cout << endl;
-    }
-  }
-
+  cout << endl;
   return 0;
 }

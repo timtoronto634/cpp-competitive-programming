@@ -4,63 +4,76 @@
 #include <algorithm>
 using namespace std;
 
-int h,w,n,r,c,Q;
-map<int, vector<int>> amp, bmp;
 
 int main(void) {
+  int h,w,n,r,c,Q;
+  map<int, vector<int>> rmap, cmap;
   cin >> h >> w >> r >> c >> n;
-  for (int i=1;i<=n;i++)  {
-    int rr, cc;
-    cin >> rr >> cc;
-    amp[rr].push_back(cc), bmp[cc].push_back(rr);
+  for (int i=0;i<n;i++) {
+    int ri, ci;
+    cin >> ri >> ci;
+    rmap[ri].push_back(ci);
+    cmap[ci].push_back(ri);
   }
-  for (auto &p : amp) sort(p.second.begin(), p.second.end());
-  for (auto &p : bmp) sort(p.second.begin(), p.second.end());
+  for (auto &rv: rmap) {
+    rv.second.push_back(0);
+    rv.second.push_back(w+1);
+    sort(rv.second.begin(), rv.second.end());
+  }
+  for (auto &cv: cmap) {
+    cv.second.push_back(0);
+    cv.second.push_back(h+1);
+    sort(cv.second.begin(), cv.second.end());
+  }
 
   cin >> Q;
-  char d; int l;
-  for (int i=1;i<=Q;i++) {
+  char d;
+  int l;
+  for (int i=0; i<Q;i++) {
     cin >> d >> l;
-    if (d=='L') {
-      auto it = amp.find(r); int lb = 0;
-      if (it != amp.end()) {
-        vector<int> &vec = it->second;
-        auto it2 = lower_bound(vec.begin(), vec.end(), c);
-        if (it2 != vec.begin()) it2--, lb = *it2;
+    if (d == 'U') {
+      auto el = cmap.find(c);
+      int lb = 0;
+      if (el != cmap.end()) {
+        vector<int> &vec = el->second;
+        auto curidx = lower_bound(vec.begin(), vec.end(), r);
+        if (curidx != vec.begin()) curidx--;
+        lb = (*curidx);
       }
-      c = max(c-l, lb+1);
+      r = max(lb+1, r-l);
     }
-    if (d=='U') {
-      auto it = bmp.find(c); int lb = 0;
-      if (it != bmp.end()) {
-        vector<int> &vec = it->second;
-        auto it2 = lower_bound(vec.begin(), vec.end(), r);
-        if (it2 != vec.begin()) it2--, lb = *it2;
+    if (d == 'D') {
+      auto el = cmap.find(c);
+      int ub = h+1;
+      if (el != cmap.end()) {
+        vector<int> &vec = el->second;
+        auto curidx = upper_bound(vec.begin(), vec.end(), r);
+        ub = (*curidx);
       }
-      r = max(r-l, lb+1);
+      r = min(ub-1, r+l);
     }
-    if (d=='R') {
-      auto it = amp.find(r); int ub = w+1;
-      if (it != amp.end()) {
-        vector<int> &vec = it->second;
-        auto it2 = upper_bound(vec.begin(), vec.end(), c);
-        if (it2 != vec.end()) ub = *it2;
+    if (d == 'L') {
+      auto el = rmap.find(r);
+      int lb = 0;
+      if (el != rmap.end()) {
+        vector<int> &vec = el->second;
+        auto curidx = lower_bound(vec.begin(), vec.end(), c);
+        if (curidx != vec.begin()) curidx--;
+        lb = (*curidx);
       }
-      c = min(c+l, ub-1);
+      c = max(lb+1, c-l);
     }
-    if (d=='D') {
-      auto it = bmp.find(c); int ub = h+1;
-      if (it != bmp.end()) {
-        vector<int> &vec = it->second;
-        auto it2 = upper_bound(vec.begin(), vec.end(), r);
-        if (it2 != vec.end()) ub = *it2;
+    if (d == 'R') {
+      auto el = rmap.find(r);
+      int ub = w+1;
+      if (el != rmap.end()) {
+        vector<int> &vec = el->second;
+        auto curidx = upper_bound(vec.begin(), vec.end(), c);
+        ub = (*curidx);
       }
-      r = min(r+l, ub-1);
+      r = min(ub-1, c+l);
     }
     cout << r << " " << c << endl;
   }
-
   return 0;
-
-
 }
