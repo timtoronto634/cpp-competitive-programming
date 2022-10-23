@@ -71,7 +71,7 @@ int main(void) {
         auto curidx = upper_bound(vec.begin(), vec.end(), c);
         ub = (*curidx);
       }
-      r = min(ub-1, c+l);
+      c = min(ub-1, c+l);
     }
     cout << r << " " << c << endl;
   }
