@@ -3,6 +3,7 @@ using namespace std;
 using ll = long long int;
 
 ll MOD = 998244353;
+// cite: https://math.nakaken88.com/textbook/cp-modulo-operation-inverse-element/
 long long modPow(long long x, long long a) {
   if (a == 1) return x;
   if (a % 2) return (x * modPow(x, a - 1)) % MOD;
