@@ -75,7 +75,12 @@
       "id": "abc275_g",
       "label": "G",
       "title": "Infinite Knapsack",
-      "url": "https://atcoder.jp/contests/abc275/tasks/abc275_g"
+      "url": "https://atcoder.jp/contests/abc275/tasks/abc275_g",
+      "directory": {
+        "path": "g",
+        "testdir": "test",
+        "submit": "main.cpp"
+      }
     },
     {
       "id": "abc275_h",
