@@ -20,5 +20,6 @@
       "valarray": "cpp",
       "bitset": "cpp"
     },
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "cmake.sourceDirectory": "${workspaceFolder}/ac-library/test/benchmark"
 }
