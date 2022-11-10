@@ -7,14 +7,19 @@ int main() {
   cin >> n >> l;
   int k;
   cin >> k;
-  vector<int> divs(n);
-  int left = l, right = l;
+  vector<int> divs(n+1);
+  int left = 1, right = l;
+  int ni;
+  int prev=0;
   for(int i=0;i<n;i++) {
-    cin >> divs[i];
-    left = min(left, divs[i]);
+    cin >> ni;
+    divs[i] = ni - prev;
+    prev = ni;
+    // left = min(left, divs[i]);
   }
+  divs[n] = l - ni;
 
-  // is the answer over x?
+  // is the answer can be more than x?
   int mid;
   while (left < right) {
     mid = left + (right - left) / 2;
@@ -23,24 +28,22 @@ int main() {
 
     ll curSum = 0;
     int cnt = 0;
-    for (int i=0;i<n;i++) {
+    for (int i=0;i<n+1;i++) {
       curSum += divs[i];
-      if (curSum > mid) {
+      if (curSum >= mid) {
         curSum = 0;
         cnt++;
       }
-      if (cnt > k) {
-        isMidValid = false;
-        break;
-      }
+      if (cnt > k)      break;
     }
 
-    if (isMidValid) {
-      right = mid;
+    if (cnt >= k+1) {
+      // mid以上のblockがk+1個以上あればそれは答えになりうる。もっと大きな値もありうる
+      left = mid+1;
     } else {
-      left = mid + 1;
+      right = mid;
     }
   }
-  cout << right << endl;
+  cout << right-1 << endl;
   return 0;
 }
