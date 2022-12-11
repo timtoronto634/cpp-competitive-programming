@@ -3,44 +3,38 @@ using namespace std;
 using ll = long long int;
 
 int main() {
-  int n, di, ci;
+  ll n, di, ci;
   ll si;
   cin >> n;
-  vector<int> d(n), c(n);
+  vector<ll> d(n), c(n);
   vector<ll> s(n);
-  int end_day = 0;
-  for (int i=0;i<n;i++) {
+  vector<tuple<ll, ll, ll>> end_cont_rew;
+  for (ll i=0;i<n;i++) {
     cin >> di >> ci >> si;
-    d[i] = di, c[i]=ci, s[i]=si;
-    end_day = max(di, end_day);
+    end_cont_rew.push_back(make_tuple(di, ci, si));
   }
-  int num_days = end_day+1;
-  // dp[何日目か][その日について仕事を][終えているか]  = 最大の報酬額
-  vector<vector<vector<ll>>> dp(num_days, vector<vector<ll>>(n, vector<ll>(2,0)));
-  // best_of_day: その日に出せる最大値。
-  ll best_of_day = 0;
-  unordered_set<int> last_best_work;
-  for (int day=1; day<=end_day; day++) {
-    for (int work=0;work<n;work++) {
-      // if ()
-      if (d[work] > day || day-c[work] < 0) {
-        // 既に締め切りが過ぎている場合は、仕事を新しく終えることはできない
-        // 必要な日数が経過していない場合も
-        dp[day][work][1] = dp[day-1][work][1];
-      } else {
-        // max(ちょうどその日に仕事を終える場合, 前日までに仕事を終えている場合)
-        dp[day][work][1] = max(s[work] + dp[day-c[work]][work][0], dp[day-1][work][1]);
+  sort(end_cont_rew.begin(), end_cont_rew.end(), [](auto const &a, auto const &b){
+    return get<0>(a) < get<0>(b);
+  });
+  ll max_reward = 0;
+  for (ll bs=1;bs<(1<<n);bs++) {
+    ll cur_day = 0; ll cur_reward = 0;
+    bool valid = true;
+
+    for (ll work=0;work<n;work++) {
+      // その仕事をするか
+      if ((bs & (1<<work)) == 0) continue;
+      // 締め切りに間に合っているか
+      if ((cur_day + get<1>(end_cont_rew[work])) > get<0>(end_cont_rew[work])) {
+        valid = false;
+        break;
       }
-      // 現状最大値がでたなら、保持しておく。
-      if (dp[day][work][1] > best_of_day) {
-        best_of_day = dp[day][work][1];
-        last_best_work = set<int>(work);
-      } else if (dp[day][work][1] == best_of_day) {
-        last_best_work.insert(work);
-      }
-      dp[day][work][0] = best_of_day;
+      cur_reward += get<2>(end_cont_rew[work]);
+      cur_day += get<1>(end_cont_rew[work]);
     }
+    if (valid) max_reward = max(max_reward, cur_reward);
   }
+  cout << max_reward << endl;
 
   return 0;
 }
