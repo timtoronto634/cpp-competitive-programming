@@ -4,11 +4,9 @@ using ll = long long int;
 
 int parent[4040010];
 
-int findPar(int cur) {
-  if (parent[cur] == -1) {
-    parent[cur] = cur;
-  } else if (parent[cur] != cur) {
-    parent[cur] = findPar(parent[cur]);
+int root(int cur) {
+  while (parent[cur] != -1 && parent[cur] != cur) {
+    cur = parent[cur];
   }
   return parent[cur];
 }
@@ -33,39 +31,31 @@ int main() {
     cin >> t;
     if (t == 1) {
       cin >> rai >> cai;
-      int tar = parent[rai*h+cai];
+      int tar = parent[rai*w+cai];
       if (tar != -1) continue;
       int top = -1;
-      if (cai > 0 && parent[rai*h+cai-1] != -1) {
-        top = findPar(rai*h+cai-1);
+      if (cai > 1 && parent[rai*w+cai-1] != -1) {
+        top = root(rai*w+cai-1);
       }
-      if (cai < w-1 && parent[rai*h+cai+1] != -1) {
-        if (top == -1) top = findPar(rai*h+cai+1);
-        else parent[findPar(rai*h+cai+1)] = top;
+      if (cai < w && parent[rai*w+cai+1] != -1) {
+        if (top == -1) top = root(rai*w+cai+1);
+        else parent[root(rai*w+cai+1)] = top;
       }
-      if (rai > 0 && parent[(rai-1)*h+cai] != -1) {
-        if (top == -1) top = findPar((rai-1)*h+cai);
-        else parent[findPar((rai-1)*h+cai)] = top;
+      if (rai > 1 && parent[(rai-1)*w+cai] != -1) {
+        if (top == -1) top = root((rai-1)*w+cai);
+        else parent[root((rai-1)*w+cai)] = top;
       }
-      if (rai < (h-1) && parent[(rai+1)*h+cai] != -1) {
-        if (top == -1) top = findPar((rai+1)*h+cai);
-        else parent[findPar((rai+1)*h+cai)] = top;
+      if (rai < h && parent[(rai+1)*w+cai] != -1) {
+        if (top == -1) top = root((rai+1)*w+cai);
+        else parent[root((rai+1)*w+cai)] = top;
       }
       // if no union, then set cur and increment cur;
-      if (top == -1) top = rai*h+cai;
-      parent[rai*h+cai] = top;
+      if (top == -1) top = rai*w+cai;
+      parent[rai*w+cai] = top;
     }
     else {
       cin >> rai >> cai >> rbi >> cbi;
-      if (rai == 4 && cai == 2 && rbi == 3) {
-        for (int i=1;i<=h;i++) {
-          for (int j=1;j<=w;j++) {
-            cout << parent[i*h+j];
-          }
-          cout << endl;
-        }
-      }
-      bool same = (onlyFind(rai*h+cai)!=-1) && (onlyFind(rbi*h+cbi)!=-1) && (findPar(rai*h+cai) == findPar(rbi*h+cbi));
+      bool same = (root(rai*w+cai)!=-1) && (root(rbi*w+cbi)!=-1) && (root(rai*w+cai) == root(rbi*w+cbi));
       cout << (same ? "Yes" : "No") << endl;
     }
   }
