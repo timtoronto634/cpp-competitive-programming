@@ -1,14 +1,43 @@
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long int;
-ll MODULE = 1000000007;
+
+
+// exponentialMod calculates pow(b, power) % mod
+long long exponentialMod(long long b, long long power, long long mod) {
+  long long result = 1, multiply = b;
+  for (int i=0;i<31;i++) {
+    if ((power & (1 << i)) != 0) { result *= multiply; result %= mod; }
+    multiply *= multiply; multiply %= mod;
+  }
+  return result;
+}
+
+// what we want: x of  bx≡a(modp)  i.e.  a/b (mod p)
+long long invModDiv(long long a, long long b, long long mod) {
+  return (a * exponentialMod(b, mod-2, mod)) % mod;
+}
+
+// calculates n! / ((n-r)! r!) mod
+long long nCrMod(long long n, long long r, long long mod) {
+  if (n < r) return 0;
+  long long numerator = 1;
+  long long denominator = 1;
+  for (int i=1;i<=n;i++) { numerator *= i; numerator %= mod; }
+  for (int i=1;i<=(n-r);i++) { denominator *= i; denominator %= mod; }
+  for (int i=1;i<=r;i++) { denominator *= i; denominator %= mod; }
+  return invModDiv(numerator, denominator, mod);
+}
 
 int main() {
   int n;
   cin >> n;
 
-  vector<ll> ans(n+1);
-  ans[n] = n;
+
+  ll MODULE = pow(10,9)+7;
+
+  // vector<ll> ans(n+1);
+  // ans[n] = n;
   // i >= (n / 2) の間は (n-i) を足していけばいい
 
   // (n/2) > i >= (n/3) の間は 2個のパターンと3個のパターンがある
@@ -33,18 +62,19 @@ int main() {
   // 追加して、混ざるパターン
   // 3: (1,2,4)(1,3,4)
   // elcnt >2 の場合、3つめ以降は好きな数字を選べる
+  // n-(div-1)(elcnt-1)C(elcnt) がこたえ
+  // 上の例だと n=4, div=1, elcnt=3
+  // (4-(0)(2)C(3)) = 4
 
 
-  for (int div=n-1;div>0;div--) {
+  for (int div=1;div<=n;div++) {
     ll plus=0;
-    for (int elcnt=2;div*(elcnt-1)<n;elcnt++) {
-      plus += (n-(div * (elcnt-1)));
+    for (int elcnt=1;elcnt<=n;elcnt++) {
+      plus += nCrMod(n-((div-1)*(elcnt-1)), elcnt, MODULE);
       plus %= MODULE;
     }
-    ans[div] = (ans[div+1] + plus) % MODULE;
+    cout << plus << endl;
   }
-
-  for (int i=1;i<=n;i++) cout << ans[i] << endl;
 
   return 0;
 }
