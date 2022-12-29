@@ -4,42 +4,39 @@ using ll = long long int;
 
 class BIT {
   public:
-    int T[100];
+    int size_ = 1;
+    vector<ll> bit;
 
-    BIT(int arr[], int size) {
-      int square = 1;
-      ll sum = 0;
-      for (int i=0;i<size;i++) {
-        sum += arr[i];
-        cout << sum << ", sq: " << square << endl;
-        if ((i+1) == square) {
-          T[i] = sum;
-          square = square << 1;
-        } else {
-          T[i] = arr[i];
-        }
-      }
+    void init(int sz) {
+      size_ = sz + 2;
+      bit.resize(size_ + 2, 0);
     }
 
     ll get(int i) {
-      return T[i];
+      return bit[i];
     }
 
-    ll getSum(int index) {
-      index++;
-      ll start = 1;
-      while (index > start) {
-        if (start << 1 > index) {
-          break;
-        }
-        start <<= 1;
+    void add(int pos, ll value) {
+      pos++;
+      while (pos <= size_) {
+        bit[pos] += value;
+        pos = pos + (pos & -pos);
       }
-      index--;
-      ll sum = T[start-1];
-      for (int i = start; i<=index;i++ ) {
-        sum += T[i];
+    }
+
+    ll sum(int pos) {
+      ll sum_ = 0;
+      pos++;
+      while (pos >= 1) {
+        sum_ += bit[pos];
+        pos -= (pos & -pos);
       }
-      return sum;
+      return sum_;
+    }
+
+    ll sumRange(int from, int to) {
+      to++;
+      return sum(to) - sum(from);
     }
 };
 
@@ -66,25 +63,14 @@ void check(int expected, int actual) {
 
 int main() {
   int test[5] = {1,2,3,4,5};
-  
-  int size = sizeof(test)/sizeof(test[0]);
-  cout << "size: " << size << endl;
-  BIT bit(test, sizeof(test)/sizeof(test[0]));
-  bit.get(3);
 
-  check(1, bit.getSum(0));
-  check(3, bit.getSum(1));
-  check(6, bit.getSum(2));
-  check(10, bit.getSum(3));
-  check(15, bit.getSum(4));
+  BIT tree;
+  tree.init(5);
+  for (int i=0;i<5;i++) tree.add(i, test[i]);
 
-  check(1, bit.get(0));
-  check(3, bit.get(1));
-  check(3, bit.get(2));
-  check(10, bit.get(3));
-  check(5, bit.get(4));
-
-  // int n[5];
-  // Init(n);
-  // Show(n);
+  check(1, tree.sum(0));
+  check(3, tree.sum(1));
+  check(6, tree.sum(2));
+  check(10, tree.sum(3));
+  check(15, tree.sum(4));
 }

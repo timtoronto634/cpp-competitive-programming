@@ -4,6 +4,43 @@ using ll = long long int;
 
 struct line {ll from; ll to;};
 
+class BIT {
+  public:
+    int size_ = 1;
+    vector<ll> bit;
+
+    void init(int sz) {
+      size_ = sz + 2;
+      bit.resize(size_ + 2, 0);
+    }
+
+    ll get(int i) {
+      return bit[i];
+    }
+
+    void add(int pos, ll value) {
+      pos++;
+      while (pos <= size_) {
+        bit[pos] += value;
+        pos = pos + (pos & -pos);
+      }
+    }
+
+    ll sum(int pos) {
+      ll sum_ = 0;
+      pos++;
+      while (pos >= 1) {
+        sum_ += bit[pos];
+        pos -= (pos & -pos);
+      }
+      return sum_;
+    }
+
+    ll sumRange(int from, int to) {
+      to++;
+      return sum(to) - sum(from);
+    }
+};
 
 long long N, M;
 
@@ -64,20 +101,19 @@ int main() {
 	vector<pair<long long, long long>> vec;
 	for (int i = 0; i < M; i++) vec.push_back(make_pair(lines[i].to, lines[i].from));
 	sort(vec.begin(), vec.end());
-  ll numFrom[N];
-  for (int i=0;i<N;i++) numFrom[i]=0;
+  BIT tree;
+  tree.init(N);
   ll numInclusive = 0;
   for (int i=0;i<M;i++) {
     auto eachl = vec[i];
-    for (int cntPoint=eachl.second+1; cntPoint <= eachl.first-1; cntPoint++) {
-      numInclusive += numFrom[cntPoint];
-    }
-    numFrom[eachl.second]++;
+    // numInclusive += tree.sumRange(eachl.second, eachl.first);
+    numInclusive += (tree.sum(eachl.first-1) - tree.sum(eachl.second));
+    tree.add(eachl.second, 1);
   }
 
 	long long Total = M * (M - 1) / 2LL;
 	long long SumAns = numSamePoint + numIndependent + numInclusive;
-	cout << Total - SumAns << endl;
+	std::cout << (Total - SumAns) << endl;
 	return 0;
 }
 
