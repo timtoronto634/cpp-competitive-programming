@@ -20,7 +20,9 @@
       "valarray": "cpp",
       "bitset": "cpp",
       "tuple": "cpp",
-      "utility": "cpp"
+      "utility": "cpp",
+      "cmath": "cpp",
+      "iomanip": "cpp"
     },
     "cmake.configureOnOpen": false,
     "cmake.sourceDirectory": "${workspaceFolder}/ac-library/test/benchmark"
