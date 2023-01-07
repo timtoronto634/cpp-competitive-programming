@@ -2,78 +2,67 @@
 using namespace std;
 using ll = long long int;
 
-class SegTree029 {
-  ll tree[1000005];
-  int num_element;
+class segment_tree {
+  private:
+    int sz;
+    std::vector<int> seg;
+    std::vector<int> lazy;
+    void push(int node) {
+      if (node < sz) {
+        lazy[node * 2] = max(lazy[node*2], lazy[node]);
+        lazy[node * 2 + 1] = max(lazy[node*2 + 1], lazy[node]);
+      }
+      seg[node] = max(seg[node], lazy[node]);
+      lazy[node] = 0;
+    }
+    void update(int a, int b, int x, int k, int l, int r) {
+      push(k);
+      if (r <= a || b <= l) return ;
+      if (a <= l && r <= b) {
+        lazy[k] = x;
+        push(k);
+        return;
+      }
+      update(a, b, x, k * 2, l, (l+r) >> 1);
+      update(a, b, x, k * 2 + 1, (l+r) >> 1, r);
+      seg[k] = max(seg[k * 2], seg[k*2 + 1]);
+    }
+    int range_max(int a, int b, int node, int l, int r) {
+      push(node);
+      if (r <= a || b <= l) return 0;
+      if (a <= l && r <= b) return seg[node];
+      int lc = range_max(a, b, node*2, l, (l+r)>>1);
+      int rc = range_max(a, b, node*2+1, (l+r)>>1, r);
+      return max(lc, rc);
+    }
+
   public:
-
-  SegTree029(int n) {
-    num_element = n;
-    for (int i=0;i<2*n;i++) {
-      tree[i] = 0;
+    segment_tree() : sz(0), seg(), lazy() {};
+    segment_tree(int N) {
+      sz = 1;
+      while (sz < N) {
+        sz *= 2;
+      }
+      seg = std::vector<int>(sz * 2, 0);
+      lazy = std::vector<int>(sz * 2, 0);
     }
-  }
-
-  int parentIdx(int node) {
-    if (node == 0) return node;
-    return (node - 1) /2;
-  }
-
-  void _updateMax(int node, ll value) {
-    if (tree[node] < value) {
-      tree[node] = value;
-      if (node!=0) _updateMax(parentIdx(node), value);
+    void update(int l, int r, int x) {
+      update(l, r, x, 1, 0, sz);
     }
-  }
-
-  ll pile(ll left, ll right) {
-    ll mx = rangeMax(left, right+1);
-    _updateRangeMax(left, right+1, 0, 0,num_element, mx+1);
-    return mx+1;
-
-  }
-
-  // 
-  void _updateRangeMax(int left, int right, int node, int cur_l, int cur_r, ll value) {
-    if (left == cur_l && right == cur_r) {
-      _updateMax(node, value);
-      return ;
+    int range_max(int l, int r) {
+      return range_max(l, r, 1, 0, sz);
     }
-    int leftEnd = cur_l + (cur_r-cur_l)/2;
-    if (left<leftEnd) {
-      _updateRangeMax(left,min(right, leftEnd), node*2+1,  cur_l, leftEnd, value);
-    }
-    if (leftEnd <= right) {
-      _updateRangeMax(max(left, leftEnd), right, node*2+1, leftEnd, cur_r, value);
-    }
-
-  }
-
-  // return max value of [left, right)
-  ll rangeMax(int left, int right) {
-    return _rangeMax(left, right+1, 0, 0, num_element);
-  }
-
-  ll _rangeMax(int left, int right, int node, int cur_l, int cur_r) {
-    if (left > right || right <= left) return 0;
-    if (left == cur_l && right == cur_r) {
-      return tree[node];
-    }
-    ll leftMax = _rangeMax(left, min(cur_l + (cur_r-cur_l)/2, right), node*2+1, cur_l, cur_l + (cur_r-cur_l)/2);
-    ll rightMax = _rangeMax(max(left, cur_l + (cur_r-cur_l)/2), right, node*2+1, cur_l + (cur_r-cur_l)/2, cur_r);
-    return max(leftMax, rightMax);
-  }
 };
 
 int main() {
   ll W, N, L, R;
   cin >> W >> N;
-  SegTree029 segtree = SegTree029(W);
-  for (int i=0;i<N;i++) {
+  segment_tree seg(W);
+  for (int i=0; i < N;i++) {
     cin >> L >> R;
-    ll out = segtree.pile(L, R);
-    cout << out << endl;
+    int height = seg.range_max(L-1, R) + 1;
+    seg.update(L-1, R, height);
+    cout << height << endl;
   }
 
-  return 0;
 }
